@@ -40,6 +40,48 @@ class ContrabandScannerTask implements Runnable
 	@Override
 	public void run()
 	{
+		if(TekkitCustomizer.instance.config_worldBanned.size() > 0)
+		{
+			ArrayList<World> worlds = TekkitCustomizer.instance.config_enforcementWorlds;
+			for(int i = 0; i < worlds.size(); i++)
+			{
+				World world = worlds.get(i);
+				Chunk [] chunks = world.getLoadedChunks();
+				
+				//scan 5% of chunks each pass
+				int firstChunk = (int)(chunks.length * (nextChunkPercentile / 100f));
+				int lastChunk = (int)(chunks.length * ((nextChunkPercentile + 5) / 100f));
+				
+				//for each chunk to be scanned
+				for(int j = firstChunk; j < lastChunk; j++)
+				{
+					Chunk chunk = chunks[j];
+					
+					//scan all its blocks for removable blocks
+					for(int x = 0; x < 16; x++)
+					{
+						for(int y = 0; y < chunk.getWorld().getMaxHeight(); y++)
+						{
+							for(int z = 0; z < 16; z++)
+							{
+								Block block = chunk.getBlock(x, y, z);
+								MaterialInfo materialInfo = new MaterialInfo(block.getTypeId(), block.getData(), null, null);
+								MaterialInfo bannedInfo = TekkitCustomizer.instance.config_worldBanned.Contains(materialInfo);
+								if(bannedInfo != null)
+								{
+									block.setType(Material.AIR);
+									TekkitCustomizer.AddLogEntry("Removed " + bannedInfo.toString() + " @ " + TekkitCustomizer.getFriendlyLocationString(block.getLocation()));
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			nextChunkPercentile += 5;
+			if(nextChunkPercentile >= 100) nextChunkPercentile = 0;			
+		}
+		
 		//check player inventories
 		if(TekkitCustomizer.instance.config_ownershipBanned.size() > 0)
 		{
