@@ -22,12 +22,12 @@ package me.ryanhamshire.TekkitCustomizer;
 public class MaterialInfo
 {
 	int typeID;
-	byte data;
+	int data;
 	boolean allDataValues;
 	String description;
 	String reason;
 	
-	public MaterialInfo(int typeID, byte data, String description, String reason)
+	public MaterialInfo(int typeID, int data, String description, String reason)
 	{
 		this.typeID = typeID;
 		this.data = data;
@@ -45,7 +45,7 @@ public class MaterialInfo
 		this.reason = reason;
 	}
 	
-	private MaterialInfo(int typeID, byte data, boolean allDataValues, String description, String reason)
+	private MaterialInfo(int typeID, int data, boolean allDataValues, String description, String reason)
 	{
 		this.typeID = typeID;
 		this.data = data;
@@ -74,7 +74,7 @@ public class MaterialInfo
 		{
 			int typeID = Integer.parseInt(parts[0]);
 		
-			byte data;
+			int data;
 			boolean allDataValues;
 			if(parts[1].equals("*"))
 			{
@@ -84,7 +84,7 @@ public class MaterialInfo
 			else
 			{
 				allDataValues = false;
-				data = Byte.parseByte(parts[1]);
+				data = Integer.parseInt(parts[1]);
 			}
 			
 			return new MaterialInfo(typeID, data, allDataValues, 
