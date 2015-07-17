@@ -117,8 +117,9 @@ public class PlayerEventHandler implements Listener {
 		
 		bannedInfo = TekkitCustomizer.instance.isBanned(ActionType.Usage, player, player.getItemInHand().getTypeId(), player.getItemInHand().getData().getData(), player.getLocation());
 		if(bannedInfo != null)
-		{
-			event.setCancelled(true);						
+		{   event.setCancelled(true);
+			player.getLocation().getWorld().dropItemNaturally(player.getLocation(), player.getItemInHand().clone()).setPickupDelay(40);
+			player.getInventory().setItemInHand(new ItemStack(Material.AIR));
 			player.sendMessage("Sorry, usage of that item has been banned.  Reason: " + bannedInfo.reason);
 		}
 		
